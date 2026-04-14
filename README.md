@@ -23,8 +23,12 @@ python3 maquina_tracos_fatorial.py
 # explicação da função implementada:
 
 os programas calculam a função fatorial definida matematicamente como:
+
 f(x) = x!
 
 onde:
+
   0! = 1
+  
   x! = x × (x−1) × (x−2) × ...,  para x > 0
+  
