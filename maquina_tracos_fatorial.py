@@ -2,26 +2,14 @@
 """
 Máquina de Traços para comparar programas de fatorial.
 
-Base conceitual usada:
-- Máquina de Traços: produz um rastro/histórico da ocorrência das operações.
-- Para monolíticos/iterativos, a comparação forte pode ser feita a partir da
-  ordem das operações observáveis.
-- Para recursivo, aqui exibimos um contraexemplo por traço: mesma função
-  computada, mas comportamento observável diferente nesta MT.
+A fita usa o formato tradicional com identificadores F, G e H.
 
-Convenção desta implementação:
-- A fita guarda apenas identificadores de operação.
-- Os testes guiam o fluxo, mas não são escritos na fita, como no exemplo da lauda.
-- A saída "sequência de fita" segue o formato (rótulo, fita).
+Convenção adotada nesta implementação:
+- F = operação principal do cálculo
+- G = operação auxiliar/avanço de controle
+- H = finalização da computação
 
-Alfabeto de operações desta MT:
-I = inicialização
-M = multiplicação do acumulador
-U = atualização da variável de controle
-F = finalização com sucesso
-E = erro de entrada
-C = chamada recursiva
-B = caso-base recursivo
+Os testes controlam o fluxo, mas não são escritos na fita.
 """
 
 from dataclasses import dataclass
@@ -51,18 +39,26 @@ class TraceResult:
 
 def trace_monolitico(n: int) -> TraceResult:
     """
-    Programa monolítico conceitual equivalente ao cálculo iterativo do fatorial.
+    Programa monolítico conceitual do fatorial.
 
     Rótulos:
-    1: faça I vá_para 2
-    2: se n < 0 vá_para 7 senão vá_para 3
-    3: se contador == 0 vá_para 6 senão vá_para 4
-    4: faça M vá_para 5
-    5: faça U vá_para 3
-    6: faça F vá_para 8
-    7: faça E vá_para 8
-    8: parada
+    1: se n < 0 vá_para 8 senão vá_para 2
+    2: se contador == 0 vá_para 5 senão vá_para 3
+    3: faça F vá_para 4
+    4: faça G vá_para 2
+    5: faça H vá_para 6
+    6: parada
+    8: erro
     """
+    if n < 0:
+        return TraceResult(
+            nome="monolítico",
+            n=n,
+            valor=None,
+            trace="ε",
+            sequencia=[("1", "ε"), ("8", "ε")],
+        )
+
     fita: List[Symbol] = []
     seq: List[Config] = [("1", fita_str(fita))]
 
@@ -70,69 +66,60 @@ def trace_monolitico(n: int) -> TraceResult:
     contador = n
     label = "1"
 
-    while label != "8":
+    while label != "6":
         if label == "1":
-            fita.append("I")
             label = "2"
             seq.append((label, fita_str(fita)))
 
         elif label == "2":
-            label = "7" if n < 0 else "3"
+            label = "5" if contador == 0 else "3"
             seq.append((label, fita_str(fita)))
 
         elif label == "3":
-            label = "6" if contador == 0 else "4"
+            resultado *= contador
+            fita.append("F")
+            label = "4"
             seq.append((label, fita_str(fita)))
 
         elif label == "4":
-            resultado *= contador
-            fita.append("M")
-            label = "5"
+            contador -= 1
+            fita.append("G")
+            label = "2"
             seq.append((label, fita_str(fita)))
 
         elif label == "5":
-            contador -= 1
-            fita.append("U")
-            label = "3"
-            seq.append((label, fita_str(fita)))
-
-        elif label == "6":
-            fita.append("F")
-            label = "8"
-            seq.append((label, fita_str(fita)))
-
-        elif label == "7":
-            fita.append("E")
-            resultado = None
-            label = "8"
+            fita.append("H")
+            label = "6"
             seq.append((label, fita_str(fita)))
 
         else:
             raise RuntimeError(f"Rótulo inválido no monolítico: {label}")
 
-    return TraceResult(
-        nome="monolítico",
-        n=n,
-        valor=resultado,
-        trace="".join(fita),
-        sequencia=seq,
-    )
+    return TraceResult("monolítico", n, resultado, "".join(fita), seq)
 
 
 def trace_iterativo(n: int) -> TraceResult:
     """
-    Programa iterativo com a mesma função computada e a mesma abstração observável.
+    Programa iterativo conceitual do fatorial.
 
     Rótulos:
-    1: faça I vá_para 2
-    2: se n < 0 vá_para 7 senão vá_para 3
-    3: se i > n vá_para 6 senão vá_para 4
-    4: faça M vá_para 5
-    5: faça U vá_para 3
-    6: faça F vá_para 8
-    7: faça E vá_para 8
-    8: parada
+    1: se n < 0 vá_para 8 senão vá_para 2
+    2: se i > n vá_para 5 senão vá_para 3
+    3: faça F vá_para 4
+    4: faça G vá_para 2
+    5: faça H vá_para 6
+    6: parada
+    8: erro
     """
+    if n < 0:
+        return TraceResult(
+            nome="iterativo",
+            n=n,
+            valor=None,
+            trace="ε",
+            sequencia=[("1", "ε"), ("8", "ε")],
+        )
+
     fita: List[Symbol] = []
     seq: List[Config] = [("1", fita_str(fita))]
 
@@ -140,106 +127,79 @@ def trace_iterativo(n: int) -> TraceResult:
     i = 1
     label = "1"
 
-    while label != "8":
+    while label != "6":
         if label == "1":
-            fita.append("I")
             label = "2"
             seq.append((label, fita_str(fita)))
 
         elif label == "2":
-            label = "7" if n < 0 else "3"
+            label = "5" if i > n else "3"
             seq.append((label, fita_str(fita)))
 
         elif label == "3":
-            label = "6" if i > n else "4"
+            resultado *= i
+            fita.append("F")
+            label = "4"
             seq.append((label, fita_str(fita)))
 
         elif label == "4":
-            resultado *= i
-            fita.append("M")
-            label = "5"
+            i += 1
+            fita.append("G")
+            label = "2"
             seq.append((label, fita_str(fita)))
 
         elif label == "5":
-            i += 1
-            fita.append("U")
-            label = "3"
-            seq.append((label, fita_str(fita)))
-
-        elif label == "6":
-            fita.append("F")
-            label = "8"
-            seq.append((label, fita_str(fita)))
-
-        elif label == "7":
-            fita.append("E")
-            resultado = None
-            label = "8"
+            fita.append("H")
+            label = "6"
             seq.append((label, fita_str(fita)))
 
         else:
             raise RuntimeError(f"Rótulo inválido no iterativo: {label}")
 
-    return TraceResult(
-        nome="iterativo",
-        n=n,
-        valor=resultado,
-        trace="".join(fita),
-        sequencia=seq,
-    )
+    return TraceResult("iterativo", n, resultado, "".join(fita), seq)
 
 
 def _trace_recursivo_ativacao(k: int, fita: List[Symbol]) -> Tuple[int, List[Config]]:
     """
     Sub-rotinas recursivas conceituais:
     R1 def (se k == 0 então R4 senão R2)
-    R2 def (faça C; R1(k-1))
-    R3 def (faça M; R5)
-    R4 def (faça B; R5)
+    R2 def (faça G; R1(k-1))
+    R3 def (faça F; R5)
+    R4 def (faça H; R5)
     R5 def ✓
     """
     seq: List[Config] = [("R1", fita_str(fita))]
 
     if k == 0:
         seq.append(("R4", fita_str(fita)))
-        fita.append("B")
+        fita.append("H")
         seq.append(("R5", fita_str(fita)))
         return 1, seq
 
     seq.append(("R2", fita_str(fita)))
-    fita.append("C")
+    fita.append("G")
     subvalor, subseq = _trace_recursivo_ativacao(k - 1, fita)
     seq.extend(subseq)
 
     seq.append(("R3", fita_str(fita)))
-    fita.append("M")
+    fita.append("F")
     seq.append(("R5", fita_str(fita)))
     return k * subvalor, seq
 
 
 def trace_recursivo(n: int) -> TraceResult:
-    fita: List[Symbol] = []
-
     if n < 0:
-        seq = [("R1", "ε"), ("R6", "ε")]
-        fita.append("E")
-        seq.append(("R5", fita_str(fita)))
         return TraceResult(
             nome="recursivo",
             n=n,
             valor=None,
-            trace="".join(fita),
-            sequencia=seq,
+            trace="ε",
+            sequencia=[("R1", "ε"), ("R6", "ε")],
         )
 
+    fita: List[Symbol] = []
     valor, seq = _trace_recursivo_ativacao(n, fita)
-    return TraceResult(
-        nome="recursivo",
-        n=n,
-        valor=valor,
-        trace="".join(fita),
-        sequencia=seq,
-    )
+    return TraceResult("recursivo", n, valor, "".join(fita), seq)
 
 
 def comparar(a: TraceResult, b: TraceResult) -> Dict[str, Any]:
@@ -265,6 +225,7 @@ def demonstracao(n: int) -> str:
     linhas.append("=" * 72)
     linhas.append(f"DEMONSTRAÇÃO DA MÁQUINA DE TRAÇOS PARA f(n) = n!, com n = {n}")
     linhas.append("=" * 72)
+
     for r in (mon, it, rec):
         linhas.append(f"\nPrograma {r.nome}")
         linhas.append(f"Valor computado: {r.valor}")
@@ -291,7 +252,6 @@ def demonstracao(n: int) -> str:
 
 
 if __name__ == "__main__":
-    # Exemplos rápidos para a apresentação
     for n in (0, 1, 3, 5):
         print(demonstracao(n))
         print()
