@@ -12,9 +12,13 @@ C em "fatorial_monolitico"
 # instruções de compilação/execução:
 
 ./fatorial_monolitico
+
 python3 fatorial_iterativo.py
+
 python3 fatorial_recursivo.py
+
 python3 maquina_tracos_fatorial.py
+
 
 # explicação da função implementada:
 
