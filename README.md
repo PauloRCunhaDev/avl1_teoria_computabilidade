@@ -74,6 +74,14 @@ $$
 n! = n \cdot (n-1) \cdot (n-2) \cdot \dots \cdot 2 \cdot 1
 $$
 
+## Máquina de traços
+
+A máquina de traços pode ter valores diferentes dos definidos, você pode altera-lós nesta parte (linha 258-259):
+```powershell
+if __name__ == "__main__":
+    for n in (0, 1, 3, 5)        
+```
+
 ## Observações
 
 - O código do programa monolítico na linguagem C e o código da máquina fatorial foram feitos com a ajuda de inteligência artificial. No caso do programa monolítico, pedimos para a IA Claude "converter" o código original monolítico em Python para C e então avaliamos a sua execução e estrututa. Para a máquina de traços, juntamos todos os programas e pedimos para a IA GPT 5.4 realizar o processo da máquina de traços em cada um dos programas, criando assim um código único que executa a máquina de traços para cada programa e faz as devidas comparações no final.
