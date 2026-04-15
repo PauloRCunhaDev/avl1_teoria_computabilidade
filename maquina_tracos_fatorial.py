@@ -150,9 +150,8 @@ def _trace_recursivo_direto_ativacao(k: int, fita: List[Symbol]) -> Tuple[int, L
 
     R1 def (se k == 0 então R4 senão R2)
     R2 def (faça G; R1(k-1))
-    R3 def (faça F; R5)
+    R3 def (faça F; R4)
     R4 def ✓
-    R5 def ✓
 
     Na descida escreve G.
     Na volta escreve F.
@@ -176,7 +175,7 @@ def _trace_recursivo_direto_ativacao(k: int, fita: List[Symbol]) -> Tuple[int, L
 
     seq.append(("R3", fita_str(fita)))
     fita.append("F")
-    seq.append(("R5", fita_str(fita)))
+    seq.append(("R4", fita_str(fita)))
 
     return k * subvalor, seq
 
