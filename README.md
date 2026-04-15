@@ -79,7 +79,7 @@ $$
 A máquina de traços pode ter valores diferentes dos definidos, você pode altera-lós nesta parte (linha 258-259):
 ```powershell
 if __name__ == "__main__":
-    for n in (0, 1, 3, 5)        
+    for n in (0, 1, 3, 5):        
 ```
 
 ## Observações
