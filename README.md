@@ -1,6 +1,6 @@
 # avl1_teoria_computabilidade
 
-Projeto com implementacoes da funcao fatorial em Python e C.
+Projeto com implementações da função fatorial em Python e C.
 
 ## Arquivos e objetivo
 
