@@ -2,6 +2,11 @@
 
 Projeto com implementações da função fatorial em Python e C.
 
+### Equipe:
+- João Pedro Follmann
+- Yuri Fernandes
+- Paulo Ricardo da Rocha
+
 ## Arquivos e objetivo
 
 - `fatorial_iterativo.py`: calcula fatorial com repetição (loop).
