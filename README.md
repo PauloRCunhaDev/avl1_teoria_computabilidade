@@ -1,34 +1,71 @@
 # avl1_teoria_computabilidade
 
-# integrantes: 
+Projeto com implementacoes da funcao fatorial em Python e C.
 
-Yuri Fernandes, João Pedro Almeida Follman e Paulo Ricardo
+## Arquivos e objetivo
 
-# Linguagens utilizadas: 
+- `fatorial_iterativo.py`: calcula fatorial com repetição (loop).
+- `fatorial_recursivo.py`: calcula fatorial com chamadas recursivas.
+- `maquina_tracos_fatorial.py`: representa o cálculo com uma lógica de máquina de traços.
+- `fatorial_monolitico.c`: versão em C com implementação direta em um único fluxo.
 
-Python em "fatorial_iterativo", "fatorial_recursivo" e "maquina_traços_fatorial".
-C em "fatorial_monolitico"
+Todos os programas resolvem o mesmo problema: receber um valor inteiro não negativo `n` e retornar `n!`.
 
-# instruções de compilação/execução:
+## Requisitos minimos
 
-./fatorial_monolitico
+- Python 3 instalado.
+- Compilador C (ex.: GCC/MinGW) para executar o arquivo em C.
 
-python3 fatorial_iterativo.py
+## Execucao (PowerShell)
 
-python3 fatorial_recursivo.py
+1. Entre na pasta do projeto:
 
-python3 maquina_tracos_fatorial.py
+```powershell
+cd .\avl1_teoria_computabilidade
+```
 
+2. Execute os programas Python:
 
-# explicação da função implementada:
+```powershell
+python .\fatorial_iterativo.py
+python .\fatorial_recursivo.py
+python .\maquina_tracos_fatorial.py
+```
 
-os programas calculam a função fatorial definida matematicamente como:
+3. Compile e execute o programa em C:
 
-f(x) = x!
+```powershell
+gcc .\fatorial_monolitico.c -o .\fatorial_monolitico.exe
+.\fatorial_monolitico.exe
+```
 
-onde:
+## Comportamento esperado
 
-  0! = 1
-  
-  X! = X × (X−1) × (X−2) × ...,  para X > 0
-  
+- Entrada: um numero inteiro `n`.
+- Restricao: `n >= 0`.
+- Saida: valor de `n!`.
+
+Exemplos:
+
+- `0! = 1`
+- `3! = 6`
+- `5! = 120`
+
+## Função implementada
+
+Todos os programas calculam a função fatorial definida por:
+
+$$
+f(n) = n! =
+\begin{cases}
+1, & \text{se } n = 0 \\
+n \cdot (n-1)!, & \text{se } n > 0
+\end{cases}
+$$
+
+Forma expandida (para `n > 0`):
+
+$$
+n! = n \cdot (n-1) \cdot (n-2) \cdot \dots \cdot 2 \cdot 1
+$$
+
